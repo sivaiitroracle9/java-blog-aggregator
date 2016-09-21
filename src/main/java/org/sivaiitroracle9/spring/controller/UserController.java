@@ -1,10 +1,16 @@
 package org.sivaiitroracle9.spring.controller;
 
-import org.sivaiitroracle9.spring.entity.User;
+import java.security.Principal;
+
+import javax.validation.Valid;
+
+import org.sivaiitroracle9.spring.entity.Blog;
+import org.sivaiitroracle9.spring.service.BlogService;
 import org.sivaiitroracle9.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,32 +22,39 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@ModelAttribute("user")
-	public User construct() {
-		return new User();
+	@Autowired
+	private BlogService blogService;
+
+	@ModelAttribute("blog")
+	public Blog constructBlog() {
+		return new Blog();
 	}
 
-	@RequestMapping("/users")
-	public String users(Model model) {
-
-		model.addAttribute("users", userService.findAll());
-		return "users";
+	@RequestMapping("/account")
+	public String account(Model model, Principal principal) {
+		String name = principal.getName();
+		if (userService.findOneWithBlogs(name) != null)
+			model.addAttribute("user", userService.findOneWithBlogs(name));
+		return "account";
 	}
 
-	@RequestMapping("/users/{id}")
-	public String detail(Model model, @PathVariable int id) {
-		model.addAttribute("user", userService.findOneWithBlogs(id));
-		return "user-detail";
+	@RequestMapping(value = "/account", method = RequestMethod.POST)
+	public String doAddBlog(Model model,
+			@Valid @ModelAttribute("blog") Blog blog, BindingResult result,
+			Principal principal) {
+		if (result.hasErrors()) {
+			return account(model, principal);
+		}
+		String name = principal.getName();
+		blogService.save(blog, name);
+		return "redirect:/account.html";
 	}
 
-	@RequestMapping("/register")
-	public String showRegister() {
-		return "user-register";
+	@RequestMapping("/blog/remove/{id}")
+	public String removeBlog(@PathVariable("id") int id) {
+		Blog blog = blogService.findOne(id);
+		blogService.delete(blog);
+		return "redirect:/account.html";
 	}
-	
-	@RequestMapping(value="/register", method=RequestMethod.POST)
-	public String doRegister(@ModelAttribute("user") User user){
-		userService.save(user);
-		return "user-register";
-	}
+
 }
