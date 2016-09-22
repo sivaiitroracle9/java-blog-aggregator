@@ -21,10 +21,10 @@ public class Blog {
 	@GeneratedValue
 	private Integer id;
 	
-	@URL
+	@URL(message="Invalid URL.")
 	private String url;
 	
-	@Size(min=3, message="Name must be at least 1 character.")
+	@Size(min=1, message="Name must be at least 1 character.")
 	private String name;
 	
 	@ManyToOne

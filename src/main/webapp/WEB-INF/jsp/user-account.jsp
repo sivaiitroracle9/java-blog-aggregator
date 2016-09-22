@@ -4,21 +4,45 @@
 <%@ include file="../layout/taglib.jsp"%>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('.nav-tabs a:first').tab('show') // Select first tab
-		$(".triggerRemove").click(function(e) {
-			e.preventDefault();
-			$("#modalRemove .removeBtn").attr("href", $(this).attr("href"));
-			$("#modalRemove").modal();
-		})
-	});
+	$(document).ready(
+			function() {
+				$('.nav-tabs a:first').tab('show'); // Select first tab
+				$(".triggerRemove").click(
+						function(e) {
+							e.preventDefault();
+							$("#modalRemove .removeBtn").attr("href",
+									$(this).attr("href"));
+							$("#modalRemove").modal();
+						});
+				$(".blog-form").validate(
+						{
+							rules : {
+								name : {
+									required : true,
+									minlength : 1
+								},
+								url : {
+									required : true,
+									url : true
+								}
+							},
+							highlight : function(element) {
+								$(element).closest('.form-group').removeClass(
+										'.has-success').addClass('.has-error');
+							},
+							unhighlight : function(element) {
+								$(element).closest('.form-group').removeClass(
+										'.has-error').addClass('.has-success');
+							}
+						});
+			});
 </script>
 
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
 	data-target="#myModal">New blog</button>
 
-<form:form commandName="blog" cssClass="form-horizontal">
+<form:form commandName="blog" cssClass="form-horizontal blog-form">
 
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -65,7 +89,7 @@
 	<c:forEach items="${user.blogs}" var="blog">
 		<li><a href="#blog_${blog.id}" data-toggle="tab">${blog.name}</a></li>
 	</c:forEach>
-	
+
 	<!-- Nav tabs -->
 	<ul class="nav nav-tabs">
 
