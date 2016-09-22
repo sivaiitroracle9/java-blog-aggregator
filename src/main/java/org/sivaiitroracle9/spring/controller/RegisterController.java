@@ -10,6 +10,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/register")
@@ -22,7 +24,7 @@ public class RegisterController {
 	public User constructUser() {
 		return new User();
 	}
-	
+
 	@RequestMapping
 	public String showRegister() {
 		return "user-register";
@@ -38,6 +40,13 @@ public class RegisterController {
 
 		userService.save(user);
 		return "redirect:/register.html?success=true";
+	}
+
+	@RequestMapping("/available")
+	@ResponseBody
+	public String available(@RequestParam String username) {
+		Boolean available = userService.findByName(username) == null;
+		return available.toString();
 	}
 
 }

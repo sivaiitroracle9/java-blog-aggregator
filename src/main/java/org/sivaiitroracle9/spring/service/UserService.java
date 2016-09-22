@@ -80,4 +80,9 @@ public class UserService {
 		userRepository.delete(id);
 	}
 
+	public User findByName(String username) {
+		// TODO Auto-generated method stub
+		return userRepository.findByName(username);
+	}
+
 }

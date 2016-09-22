@@ -3,6 +3,7 @@ package org.sivaiitroracle9.spring.entity;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.sivaiitroracle9.spring.annotation.UniqueUsername;
 
 @Entity
 public class User {
@@ -21,13 +23,15 @@ public class User {
 	@GeneratedValue
 	private Integer id;
 
-	@Size(min = 3, message="Name must be at least 3 characters!")
+	@Size(min = 3, message = "Name must be at least 3 characters!")
+	@Column(unique = true)
+	@UniqueUsername(message="Username already exists.")
 	private String name;
 
-	@Email(message="Enter a valid email.")
+	@Email(message = "Enter a valid email.")
 	private String email;
 
-	@Size(min = 5, message="Password must be at least 3 characters!")
+	@Size(min = 5, message = "Password must be at least 3 characters!")
 	private String password;
 
 	private boolean enabled;
@@ -36,7 +40,7 @@ public class User {
 	@JoinTable
 	private List<Role> roles;
 
-	@OneToMany(mappedBy = "user", cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Blog> blogs;
 
 	public boolean isEnabled() {
