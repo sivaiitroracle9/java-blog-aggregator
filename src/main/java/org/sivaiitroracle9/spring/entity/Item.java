@@ -18,8 +18,10 @@ public class Item {
 	@GeneratedValue
 	private Integer id;
 	
+	@Column(length=1000)
 	private String item;
 	
+	@Column(length=1000)
 	private String title;
 	
 	@Type(type="text")
