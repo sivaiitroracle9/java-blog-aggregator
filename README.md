@@ -1,1 +1,3 @@
-# java-blog-aggregator
+# blog-aggregator
+
+# deployed application: 			http://blogsaggregate.herokuapp.com/
